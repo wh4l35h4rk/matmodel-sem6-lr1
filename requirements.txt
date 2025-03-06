@@ -26,6 +26,7 @@ lockfile==0.12.2
 matplotlib==3.10.1
 more-itertools==9.1.0
 msgpack==1.0.5
+numpy==2.2.3
 packaging==23.0
 pexpect==4.8.0
 pillow==11.1.0
