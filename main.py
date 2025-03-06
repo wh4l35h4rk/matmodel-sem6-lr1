@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # ИССЛЕДОВАНИЕ 1
     experiment = 1
 
-    T0 = 298 # 25 градусов цельсия
+    T0 = 298 # 25 градусов Цельсия
     P = 500 # 0.5 кВ
     S = 0.04
     c = 904 # алюминий
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     # ИССЛЕДОВАНИЕ 2
     experiment = 2
 
-    T0 = 298 # 25 градусов цельсия
+    T0 = 298 # 25 градусов Цельсия
     P = 500 # 0.5 кВ
     S = 0.04
     c = 904 # алюминий
@@ -142,15 +142,15 @@ if __name__ == '__main__':
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
 
-    plt.plot(x_list1, y_list1, label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 1$')
-    plt.plot(x_list2, y_list2, label=r'$P = 1 кВт, S = 0.04 м^2, \epsilon = 1$')
-    plt.plot(x_list3, y_list3, label=r'$P = 1 кВт, S = 0.1 м^2, \epsilon = 1$')
-    plt.plot(x_list4, y_list4, label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 0.5$')
-
     plt.plot(x_list1, [T_max1 for i in range(len(y_list1))], '--', linewidth=1, color='grey')
     plt.plot(x_list2, [T_max2 for i in range(len(y_list2))], '--', linewidth=1, color='grey')
     plt.plot(x_list3, [T_max3 for i in range(len(y_list3))], '--', linewidth=1, color='grey')
     plt.plot(x_list4, [T_max4 for i in range(len(y_list4))], '--', linewidth=1, color='grey')
+
+    plt.plot(x_list2, y_list2, label=r'$P = 1 кВт, S = 0.04 м^2, \epsilon = 1$')
+    plt.plot(x_list4, y_list4, label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 0.5$')
+    plt.plot(x_list1, y_list1, label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 1$')
+    plt.plot(x_list3, y_list3, label=r'$P = 1 кВт, S = 0.1 м^2, \epsilon = 1$')
 
     plt.legend(loc='lower right')
     plt.grid()
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     # ИССЛЕДОВАНИЕ 3
     experiment = 3
 
-    T0 = 298 # 25 градусов цельсия
+    T0 = 298 # 25 градусов Цельсия
     P = 500 # 0.5 кВ
     S = 0.04
     c = 904 # алюминий
@@ -199,9 +199,9 @@ if __name__ == '__main__':
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
 
-    plt.plot(x_list1, y_list1, label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
     plt.plot(x_list2, y_list2, label=r'$c = 129 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
     plt.plot(x_list3, y_list3, label=r'$c = 129 \frac{Дж}{кг \cdot \degree K}\, m = 0.25 кг$')
+    plt.plot(x_list1, y_list1, label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
     plt.plot(x_list4, y_list4, label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.25 кг$')
 
     plt.plot(x_list1, [T_max1 for i in range(len(y_list1))], '--', linewidth=1, color='grey')
@@ -216,7 +216,7 @@ if __name__ == '__main__':
     # МОДЕЛЬ С ТЕРМОРЕГУЛЯТОРОМ
     experiment = 4
 
-    T0 = 298 # 25 градусов цельсия
+    T0 = 298 # 25 градусов Цельсия
     P = 500 # 0.5 кВ
     S = 0.04
     c = 904 # алюминий
