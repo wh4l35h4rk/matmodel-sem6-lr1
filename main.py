@@ -252,6 +252,8 @@ if __name__ == '__main__':
     T_max3 = Tmax
     T_min3 = Tmin
 
+    plt.xlabel(r'$t$, с')
+    plt.ylabel(r'$T, \degree$K')
 
     plt.plot(x_list2, [T_max2 for i in range(len(y_list2))], '--', linewidth=1, color='grey')
     plt.plot(x_list2, [T_min2 for i in range(len(y_list2))], '--', linewidth=1, color='grey')
