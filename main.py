@@ -72,7 +72,7 @@ if __name__ == '__main__':
     plt.yticks(old_ticks + [T_max])
     plt.legend(loc='lower right')
     plt.grid()
-    plt.savefig('1.png')
+    plt.savefig('1.png', bbox_inches='tight')
     plt.show()
     plt.clf()
 
@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
     plt.legend(loc='lower right')
     plt.grid()
-    plt.savefig('2.png')
+    plt.savefig('2.png', bbox_inches='tight')
     plt.show()
     plt.clf()
 
@@ -190,7 +190,7 @@ if __name__ == '__main__':
 
     plt.legend(loc='lower right')
     plt.grid()
-    plt.savefig('3.png')
+    plt.savefig('3.png', bbox_inches='tight')
     plt.show()
     plt.clf()
 
