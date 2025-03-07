@@ -1,15 +1,15 @@
 import matplotlib.pyplot as plt
 
-def exit_condition(experiment, x):
+def exit_condition(experiment):
     match experiment:
         case 1:
-            return True
+            return 0
         case 2:
-            return x > 500
+            return 500
         case 3:
-            return x > 600
+            return 600
         case 4:
-            return x > 500
+            return 500
 
 
 def func(t, T, T0, P, S, c, m, k, epsilon, sigma, T_max, T_min):
@@ -50,9 +50,35 @@ def rungeKutta(x0, y0, h, param_list, r_param_list, experiment):
         x_list.append(x0)
         y_list.append(y)
 
-        if (abs(y - y_prev) < 1e-5 or experiment == 4) and exit_condition(experiment, x0):
+        if (abs(y - y_prev) < 1e-5 or experiment == 4) and x0 > exit_condition(experiment):
             break
     return x_list, y_list
+
+
+def exp_data(x0, h, param_list, r_param_list, experiment):
+    y = T0
+    rk = rungeKutta(x0, y, h, param_list, r_param_list, experiment)
+
+    if experiment == 1:
+        x_list = rk[0]
+        y_list = rk[1]
+        T_max = y_list[len(y_list) - 1]
+        T_min = 0
+    else:
+        limit = exit_condition(experiment)
+        x_list = rk[0][:(int)(limit / h)]
+        y_list = rk[1][:(int)(limit / h)]
+        if experiment == 4:
+            T_max = T_relay_max
+            T_min = T_relay_min
+        else:
+            T_max = y_list[len(y_list) - 1]
+            T_min = 0
+
+    return {"x": x_list,
+            "y": y_list,
+            "T_max": T_max,
+            "T_min": T_min}
 
 
 if __name__ == '__main__':
@@ -76,19 +102,16 @@ if __name__ == '__main__':
     y = T0
     h = 0.1
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list = rk[0]
-    y_list = rk[1]
-    T_max = y_list[len(y_list) - 1]
-    # print(T_max - 273)
+    data = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
-    plt.plot(x_list, y_list, label=r'$T(t, T_0, P, S, c, m, k, \epsilon, \sigma)$')
-    plt.plot(x_list, [T_max for i in range(len(y_list))], '--', linewidth=1, label=r'$T_{max}$')
+    plt.plot(data["x"], data["y"], label=r'$T(t, T_0, P, S, c, m, k, \epsilon, \sigma)$')
+    plt.plot(data["x"], [data["T_max"] for i in range(len(data["y"]))], '--', linewidth=1, label=r'$T_{max}$')
+
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
     old_ticks = list(plt.yticks()[0])
     old_ticks.remove(650)
-    plt.yticks(old_ticks + [T_max])
+    plt.yticks(old_ticks + [data["T_max"]])
     plt.legend(loc='lower right')
     plt.grid()
     plt.savefig('1.png', bbox_inches='tight')
@@ -99,49 +122,32 @@ if __name__ == '__main__':
     # ИССЛЕДОВАНИЕ 2
     experiment = 2
 
-    y = T0
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list1 = rk[0][:(int)(500/h)]
-    y_list1 = rk[1][:(int)(500/h)]
-    T_max1 = y_list1[len(y_list1) - 1]
+    data_1 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     P = 1000
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list2 = rk[0]
-    y_list2 = rk[1]
-    T_max2 = y_list2[len(y_list2) - 1]
+    data_2 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     S = 0.1
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list3 = rk[0]
-    y_list3 = rk[1]
-    T_max3 = y_list3[len(y_list3) - 1]
+    data_3 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     epsilon = 0.5
     P = 500
     S = 0.04
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list4 = rk[0][:(int)(500/h)]
-    y_list4 = rk[1][:(int)(500/h)]
-    T_max4 = y_list4[len(y_list4) - 1]
+    data_4 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
 
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
 
-    plt.plot(x_list1, [T_max1 for i in range(len(y_list1))], '--', linewidth=1, color='grey')
-    plt.plot(x_list2, [T_max2 for i in range(len(y_list2))], '--', linewidth=1, color='grey')
-    plt.plot(x_list3, [T_max3 for i in range(len(y_list3))], '--', linewidth=1, color='grey')
-    plt.plot(x_list4, [T_max4 for i in range(len(y_list4))], '--', linewidth=1, color='grey')
+    plt.plot(data_1["x"], [data_1["T_max"] for i in range(len(data_1["y"]))], '--', linewidth=1, color='grey')
+    plt.plot(data_2["x"], [data_2["T_max"] for i in range(len(data_2["y"]))], '--', linewidth=1, color='grey')
+    plt.plot(data_3["x"], [data_3["T_max"] for i in range(len(data_3["y"]))], '--', linewidth=1, color='grey')
+    plt.plot(data_4["x"], [data_4["T_max"] for i in range(len(data_4["y"]))], '--', linewidth=1, color='grey')
 
-    plt.plot(x_list2, y_list2, label=r'$P = 1 кВт, S = 0.04 м^2, \epsilon = 1$')
-    plt.plot(x_list4, y_list4, label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 0.5$')
-    plt.plot(x_list1, y_list1, label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 1$')
-    plt.plot(x_list3, y_list3, label=r'$P = 1 кВт, S = 0.1 м^2, \epsilon = 1$')
+    plt.plot(data_2["x"], data_2["y"], label=r'$P = 1 кВт, S = 0.04 м^2, \epsilon = 1$')
+    plt.plot(data_4["x"], data_4["y"], label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 0.5$')
+    plt.plot(data_1["x"], data_1["y"], label=r'$P = 0.5 кВт, S = 0.04 м^2, \epsilon = 1$')
+    plt.plot(data_3["x"], data_3["y"], label=r'$P = 1 кВт, S = 0.1 м^2, \epsilon = 1$')
 
     plt.legend(loc='lower right')
     plt.grid()
@@ -154,40 +160,26 @@ if __name__ == '__main__':
     experiment = 3
 
     epsilon = 1
-    y = T0
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list1 = rk[0][:(int)(600 / h)]
-    y_list1 = rk[1][:(int)(600 / h)]
-    T_max1 = y_list1[len(y_list1) - 1]
+    data_1 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     c = 129 # золото
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list2 = rk[0]
-    y_list2 = rk[1]
+    data_2 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     m = 0.25
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list3 = rk[0]
-    y_list3 = rk[1]
+    data_3 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     c = 904
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list4 = rk[0][:(int)(600/h)]
-    y_list4 = rk[1][:(int)(600/h)]
+    data_4 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
 
-    plt.plot(x_list2, y_list2, label=r'$c = 129 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
-    plt.plot(x_list3, y_list3, label=r'$c = 129 \frac{Дж}{кг \cdot \degree K}\, m = 0.25 кг$')
-    plt.plot(x_list1, y_list1, label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
-    plt.plot(x_list4, y_list4, label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.25 кг$')
+    plt.plot(data_2["x"], data_2["y"], label=r'$c = 129 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
+    plt.plot(data_3["x"], data_3["y"], label=r'$c = 129 \frac{Дж}{кг \cdot \degree K}\, m = 0.25 кг$')
+    plt.plot(data_1["x"], data_1["y"], label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.15 кг$')
+    plt.plot(data_4["x"], data_4["y"], label=r'$c = 904 \frac{Дж}{кг \cdot \degree K}\, m = 0.25 кг$')
 
-    plt.plot(x_list1, [T_max1 for i in range(len(y_list1))], '--', linewidth=1, color='grey')
+    plt.plot(data_1["x"], [data_1["T_max"] for i in range(len(data_1["y"]))], '--', linewidth=1, color='grey')
 
     plt.legend(loc='lower right')
     plt.grid()
@@ -200,48 +192,32 @@ if __name__ == '__main__':
     experiment = 4
 
     m = 0.15
-
-    y = T0
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list1 = rk[0][:(int)(600 / h)]
-    y_list1 = rk[1][:(int)(600 / h)]
-    T_max1 = y_list1[len(y_list1) - 1]
+    data_1 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], 2)
 
     R = 1
     T_relay_max = 600
     T_relay_min = 500
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list2 = rk[0]
-    y_list2 = rk[1]
-    T_max2 = T_relay_max
-    T_min2 = T_relay_min
+    data_2 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     R = 1
     T_relay_max = 450
     T_relay_min = 400
-
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
-    x_list3 = rk[0]
-    y_list3 = rk[1]
-    T_max3 = T_relay_max
-    T_min3 = T_relay_min
+    data_3 = exp_data(x0, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
 
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
 
-    plt.plot(x_list2, [T_max2 for i in range(len(y_list2))], '--', linewidth=1, color='grey')
-    plt.plot(x_list2, [T_min2 for i in range(len(y_list2))], '--', linewidth=1, color='grey')
+    plt.plot(data_2["x"], [data_2["T_max"] for i in range(len(data_2["y"]))], '--', linewidth=1, color='grey')
+    plt.plot(data_2["x"], [data_2["T_min"] for i in range(len(data_2["y"]))], '--', linewidth=1, color='grey')
 
-    plt.plot(x_list3, [T_max3 for i in range(len(y_list3))], '--', linewidth=1, color='grey')
-    plt.plot(x_list3, [T_min3 for i in range(len(y_list3))], '--', linewidth=1, color='grey')
+    plt.plot(data_3["x"], [data_3["T_max"] for i in range(len(data_3["y"]))], '--', linewidth=1, color='grey')
+    plt.plot(data_3["x"], [data_3["T_min"] for i in range(len(data_3["y"]))], '--', linewidth=1, color='grey')
 
-    plt.plot(x_list1, [T_max1 for i in range(len(y_list1))], '--', linewidth=1, color='grey')
+    plt.plot(data_1["x"], [data_1["T_max"] for i in range(len(data_1["y"]))], '--', linewidth=1, color='grey')
 
-    plt.plot(x_list2, y_list2, label=r'$T_{max} = 600 \degree K, T_{min} = 500 \degree K$')
-    plt.plot(x_list3, y_list3, label=r'$T_{max} = 450 \degree K, T_{min} = 400 \degree K$')
-    plt.plot(x_list1, y_list1, label='Нагреватель без терморегулятора')
+    plt.plot(data_2["x"], data_2["y"], label=r'$T_{max} = 600 \degree K, T_{min} = 500 \degree K$')
+    plt.plot(data_3["x"], data_3["y"], label=r'$T_{max} = 450 \degree K, T_{min} = 400 \degree K$')
+    plt.plot(data_1["x"], data_1["y"], label='Нагреватель без терморегулятора')
 
     plt.legend(loc='lower right')
     plt.grid()
