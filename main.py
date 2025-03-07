@@ -13,14 +13,14 @@ def exit_condition(experiment, x):
 
 
 def func(t, T, T0, P, S, c, m, k, epsilon, sigma, T_max, T_min):
-    Q1 = P * relais(T, T_max, T_min)
+    Q1 = P * relay(T, T_max, T_min)
     Q2 = k * S * (T - T0)
     Q3 = epsilon * S * sigma * (T**4 - T0**4)
     return (Q1 - Q2 - Q3) / (c * m)
 
 
 R = 1
-def relais(T, T_max, T_min):
+def relay(T, T_max, T_min):
     if T_max == 0:
         return 1
 
@@ -57,8 +57,8 @@ def rungeKutta(x0, y0, h, param_list, r_param_list, experiment):
 
 if __name__ == '__main__':
     # МОДЕЛЬ БЕЗ ТЕРМОРЕГУЛЯТОРА
-    Tmax = 0
-    Tmin = 0
+    T_relay_max = 0
+    T_relay_min = 0
 
     # ИССЛЕДОВАНИЕ 1
     experiment = 1
@@ -70,13 +70,13 @@ if __name__ == '__main__':
     m = 0.15
     epsilon = 1
     sigma = 5.67 * 10**(-8)
-    k = 6.706
+    k  = 6.7
 
     x0 = 0
     y = T0
     h = 0.1
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list = rk[0]
     y_list = rk[1]
     T_max = y_list[len(y_list) - 1]
@@ -99,32 +99,23 @@ if __name__ == '__main__':
     # ИССЛЕДОВАНИЕ 2
     experiment = 2
 
-    T0 = 298 # 25 градусов Цельсия
-    P = 500 # 0.5 кВ
-    S = 0.04
-    c = 904 # алюминий
-    m = 0.15
-    epsilon = 1
-    sigma = 5.67 * 10**(-8)
-    k = 6.706
-
     y = T0
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list1 = rk[0][:(int)(500/h)]
     y_list1 = rk[1][:(int)(500/h)]
     T_max1 = y_list1[len(y_list1) - 1]
 
     P = 1000
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list2 = rk[0]
     y_list2 = rk[1]
     T_max2 = y_list2[len(y_list2) - 1]
 
     S = 0.1
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list3 = rk[0]
     y_list3 = rk[1]
     T_max3 = y_list3[len(y_list3) - 1]
@@ -133,7 +124,7 @@ if __name__ == '__main__':
     P = 500
     S = 0.04
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list4 = rk[0][:(int)(500/h)]
     y_list4 = rk[1][:(int)(500/h)]
     T_max4 = y_list4[len(y_list4) - 1]
@@ -162,37 +153,29 @@ if __name__ == '__main__':
     # ИССЛЕДОВАНИЕ 3
     experiment = 3
 
-    T0 = 298 # 25 градусов Цельсия
-    P = 500 # 0.5 кВ
-    S = 0.04
-    c = 904 # алюминий
-    m = 0.15
     epsilon = 1
-    sigma = 5.67 * 10**(-8)
-    k = 6.706
-
     y = T0
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list1 = rk[0][:(int)(600 / h)]
     y_list1 = rk[1][:(int)(600 / h)]
     T_max1 = y_list1[len(y_list1) - 1]
 
     c = 129 # золото
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list2 = rk[0]
     y_list2 = rk[1]
 
     m = 0.25
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list3 = rk[0]
     y_list3 = rk[1]
 
     c = 904
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list4 = rk[0][:(int)(600/h)]
     y_list4 = rk[1][:(int)(600/h)]
 
@@ -216,41 +199,34 @@ if __name__ == '__main__':
     # МОДЕЛЬ С ТЕРМОРЕГУЛЯТОРОМ
     experiment = 4
 
-    T0 = 298 # 25 градусов Цельсия
-    P = 500 # 0.5 кВ
-    S = 0.04
-    c = 904 # алюминий
     m = 0.15
-    epsilon = 1
-    sigma = 5.67 * 10**(-8)
-    k = 6.706
 
     y = T0
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list1 = rk[0][:(int)(600 / h)]
     y_list1 = rk[1][:(int)(600 / h)]
     T_max1 = y_list1[len(y_list1) - 1]
 
     R = 1
-    Tmax = 600
-    Tmin = 500
+    T_relay_max = 600
+    T_relay_min = 500
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list2 = rk[0]
     y_list2 = rk[1]
-    T_max2 = Tmax
-    T_min2 = Tmin
+    T_max2 = T_relay_max
+    T_min2 = T_relay_min
 
     R = 1
-    Tmax = 450
-    Tmin = 400
+    T_relay_max = 450
+    T_relay_min = 400
 
-    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [Tmax, Tmin], experiment)
+    rk = rungeKutta(x0, y, h, [T0, P, S, c, m, k, epsilon, sigma], [T_relay_max, T_relay_min], experiment)
     x_list3 = rk[0]
     y_list3 = rk[1]
-    T_max3 = Tmax
-    T_min3 = Tmin
+    T_max3 = T_relay_max
+    T_min3 = T_relay_min
 
     plt.xlabel(r'$t$, с')
     plt.ylabel(r'$T, \degree$K')
